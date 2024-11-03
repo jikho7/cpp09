@@ -2,15 +2,15 @@
 
 int main(int ac, char**av) // input.txt
 {
-    Btc btc;
+    BitcoinExchange BitcoinExchange;
     (void)ac;
     (void)av;
-    btc.process();
+    BitcoinExchange.process();
     return (0);
 }
 
 /*
     - getline(data.csv)
-    - mettre res dans map (key: date, value: price btc)
+    - mettre res dans map (key: date, value: price BitcoinExchange)
 
 */

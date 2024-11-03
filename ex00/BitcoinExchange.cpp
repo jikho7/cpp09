@@ -5,82 +5,92 @@
 #include <iostream>
 #include <sstream> // permet conversion de flux de chaine en type choisi
 
-Btc::Btc() : _strPrice(""), _date("")
-{
-}
+BitcoinExchange::BitcoinExchange() : _value(""), _key(""){}
 
-Btc::~Btc(){}
+BitcoinExchange::~BitcoinExchange(){}
 
-Btc::Btc(Btc &other)
+BitcoinExchange::BitcoinExchange(BitcoinExchange &other)
 {
     this->_data = other._data;
-    this->_strPrice = other._strPrice;
-    this->_date = other._date;
+    this->_value = other._value;
+    this->_key = other._key;
 }
 
-Btc &Btc::operator=(Btc &other)
+BitcoinExchange &BitcoinExchange::operator=(BitcoinExchange &other)
 {
     if(this != &other)
     {
         this->_data = other._data;
-        this->_strPrice = other._strPrice;
-        this->_date = other._date;
+        this->_value = other._value;
+        this->_key = other._key;
     }
     return *this;
 }
-int Btc::process()
+int BitcoinExchange::process()
 {
-    extractDataFromFile();
-    displayMap();
-
+    //extractDataFromFile();
+    extractFromInput();
+    //displayMap(this->_data);
+    displayMap(this->_input);
     return 0;
 }
-int Btc::extractDataFromFile()
+int BitcoinExchange::extractDataFromFile()
 {
     std::string line;
-    //std::string date;
 
     std::ifstream data("data.csv");
-    //std::string price;
 
     while(std::getline(data, line))
     {
         size_t pos = line.find(",");
-        this->_date = line.substr(0, pos); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
+        this->_key = line.substr(0, pos); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
         line.erase(0, pos + 1);
-        this->_strPrice = line.substr(0, line.size()); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
-        insertToMap();
+        this->_value = line.substr(0, line.size()); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
+        insertToMap(this->_data, this->_value);
     }
     return 0;
 }
 
-void Btc::displayMap()
+int BitcoinExchange::extractFromInput()
 {
-    for (std::map<std::string, float>::iterator it = this->_data.begin(); it!=this->_data.end(); ++it)
-        std::cout << it->first << " => " << it->second << '\n';
-}
+    std::string line;
+    std::ifstream input("input.txt");
 
-int Btc::insertToMap()
-{
-    std::stringstream ss(this->_strPrice);
-    float res;
-    ss >> res;
-    this->_data.insert(std::pair<std::string, float> (this->_date, res));
+    while(std::getline(input, line))
+    {
+        size_t pos = line.find("|");
+        if(pos == std::string::npos)
+        {
+            this->_value = "";
+        }
+        else if(pos > 0)
+        {
+            this->_key = line.substr(0, pos);
+            line.erase(0, pos + 1);
+            this->_value = line.substr(0, line.size());
+        }
+        std::cout << "date : " << this->_key << " amount : " << this->_value << std::endl;
+        insertToMap(this->_input, this->_value);
+    }
     return 0;
 }
 
-/* NOTE
-    - Conversion avec stringstream <sstream>
-    int num = 123;
-    std::stringstream ss;
-    ss << num;
-    std::string str = ss.str(); // Convertit l'entier 123 en chaîne "123"
+void BitcoinExchange::displayMap(std::map<std::string, float>& map)
+{
+    for (std::map<std::string, float>::iterator it = map.begin(); it != map.end(); ++it)
+    {
+        std::cout << it->first << " => " << it->second << '\n';
+    }
+}
 
-    std::string str = "123";
-    std::stringstream ss(str);
-    int num;
-    ss >> num; // Convertit la chaîne "123" en entier 123
-*/
+int BitcoinExchange::insertToMap(std::map<std::string, float>& map, std::string secondParam)
+{
+    std::stringstream ss(secondParam);
+    float res;
+    ss >> res;
+    map.insert(std::pair<std::string, float>(this->_key, res));
+    return 0;
+}
 
 
 
