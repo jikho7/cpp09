@@ -1,11 +1,12 @@
 #include <iostream>
 #include <map>
 #include <exception>
+#include <ctime>
 
 class BitcoinExchange
 {
-    std::map<std::string, float> _data;
-    std::map<std::string, float> _input;
+    std::multimap<std::string, float> _data;
+    std::multimap<std::string, float> _input;
     std::string _value;
     std::string _key;
 
@@ -24,9 +25,20 @@ class BitcoinExchange
             }
         };
 
+        class invalidDate : public std::exception
+        {
+            public:
+            virtual const char* what() const throw()
+            {
+                return("Date is not valid\n");
+            }
+        };
+
         int     process();
         int     extractDataFromFile();
         int     extractFromInput();
-        void    displayMap(std::map<std::string, float>& map);
-        int     insertToMap(std::map<std::string, float>& map, std::string secondParam);
+        void    displaymultimap(std::multimap<std::string, float>& multimap);
+        int     insertToMultiMap(std::multimap<std::string, float>& multimap, std::string secondParam);
+        int     isDateValid();
+        int     madness();
 };

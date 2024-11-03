@@ -10,7 +10,7 @@ int main(int ac, char**av) // input.txt
 }
 
 /*
-    - getline(data.csv)
-    - mettre res dans map (key: date, value: price BitcoinExchange)
+    - verifier si date valide
+    - faire calcul
 
 */

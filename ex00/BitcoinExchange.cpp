@@ -30,8 +30,9 @@ int BitcoinExchange::process()
 {
     //extractDataFromFile();
     extractFromInput();
-    //displayMap(this->_data);
-    displayMap(this->_input);
+    //displaymultimap(this->_data);
+    displaymultimap(this->_input);
+    isDateValid();
     return 0;
 }
 int BitcoinExchange::extractDataFromFile()
@@ -46,7 +47,7 @@ int BitcoinExchange::extractDataFromFile()
         this->_key = line.substr(0, pos); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
         line.erase(0, pos + 1);
         this->_value = line.substr(0, line.size()); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
-        insertToMap(this->_data, this->_value);
+        insertToMultiMap(this->_data, this->_value);
     }
     return 0;
 }
@@ -70,28 +71,87 @@ int BitcoinExchange::extractFromInput()
             this->_value = line.substr(0, line.size());
         }
         std::cout << "date : " << this->_key << " amount : " << this->_value << std::endl;
-        insertToMap(this->_input, this->_value);
+        insertToMultiMap(this->_input, this->_value);
     }
     return 0;
 }
 
-void BitcoinExchange::displayMap(std::map<std::string, float>& map)
+void BitcoinExchange::displaymultimap(std::multimap<std::string, float>& multimap)
 {
-    for (std::map<std::string, float>::iterator it = map.begin(); it != map.end(); ++it)
+    for (std::multimap<std::string, float>::iterator it = multimap.begin(); it != multimap.end(); ++it)
     {
         std::cout << it->first << " => " << it->second << '\n';
     }
 }
 
-int BitcoinExchange::insertToMap(std::map<std::string, float>& map, std::string secondParam)
+int BitcoinExchange::insertToMultiMap(std::multimap<std::string, float>& multimap, std::string secondParam)
 {
     std::stringstream ss(secondParam);
     float res;
     ss >> res;
-    map.insert(std::pair<std::string, float>(this->_key, res));
+    multimap.insert(std::pair<std::string, float>(this->_key, res));
     return 0;
 }
 
+int BitcoinExchange::isDateValid()
+{
+    // YYYY-MM-DD
+    std::string year;
+    std::string month;
+    std::string day;
 
+    std::string tmp = this->_key;
+    //std::cout << "tmp : " << tmp << " tmp size : " << tmp.size() << " tmp[4] : " << tmp[4] << " tmp[7] : " << tmp[7] << std::endl;
+    if (tmp.size() != 11 || tmp[4] != '-' || tmp[7] != '-')
+        throw BitcoinExchange::invalidDate();
+    
+    size_t pos = tmp.find("-");
+    year = tmp.substr(0, pos);
+    tmp.erase(0, pos + 1);
+    
+    pos = tmp.find("-");
+    month = tmp.substr(0, pos);
+    tmp.erase(0, pos + 1);
 
+    day = tmp.substr(0, tmp.size());
 
+    std::cout << "year : " << year << " month : " << month << " day : " << day << std::endl;
+    
+    // from string to int
+    std::stringstream ssYear (year);
+    int res;
+    ssYear >> res;
+    if(res > 2022 || res < 2009)
+    {
+        std::cout << "Res : " << res << " Invalid year : " << this->_key << std::endl;
+        throw BitcoinExchange::invalidDate();
+    }
+
+    std::stringstream ssMonth (month);
+    ssMonth >> res;
+    if(res > 12 || res < 1)
+    {
+        std::cout << "Res : " << res << " Invalid month: " << this->_key << std::endl;
+        throw BitcoinExchange::invalidDate();
+    }
+    
+    std::stringstream ssDay (day);
+    ssDay >> res;
+    if(res > 31 || res < 1)
+    {
+        std::cout << "Res : " << res << " Invalid day: " << this->_key << std::endl;
+        throw BitcoinExchange::invalidDate();
+    }
+    return 0;
+}
+
+int BitcoinExchange::madness()
+{
+    /*
+        - comparer date input avec date data
+        - multiplier value input avec value data
+        - gerer cas d erreur
+    
+    */
+    return 0;
+}
