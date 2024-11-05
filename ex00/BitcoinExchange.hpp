@@ -9,6 +9,7 @@ class BitcoinExchange
     std::multimap<std::string, float> _input;
     std::string _value;
     std::string _key;
+    std::string _line;
 
     public:
         BitcoinExchange();
@@ -16,29 +17,35 @@ class BitcoinExchange
         BitcoinExchange(BitcoinExchange &other);
         BitcoinExchange&operator=(BitcoinExchange &other);
 
-        class Parameter : public std::exception
-        {
+        class CustomException : public std::exception {
+            private:
+                std::string _message;
             public:
-            virtual const char* what() const throw()
-            {
-                return("Parameter Error\n");
-            }
-        };
-
-        class invalidDate : public std::exception
-        {
-            public:
-            virtual const char* what() const throw()
-            {
-                return("Date is not valid\n");
-            }
+                CustomException(const std::string& message) : _message(message) {}
+                virtual ~CustomException() throw() {} // Bonne pratique pour gerer ressoucrces
+                virtual const char* what() const throw() { // polymorphisme
+                    return _message.c_str();
+                }
         };
 
         int     process();
         int     extractDataFromFile();
-        int     extractFromInput();
+        int     isInputValid();
+        int     calculate();
+
+        bool    isSeparator();
+        bool    isInputKeyValid();
+        bool    isInputValueValid();
+
+        bool    isYearValid(std::string year);
+        bool    isMonthValid(std::string month);
+        bool    isDayValid(std::string day);
+
+        std::string getString();
         void    displaymultimap(std::multimap<std::string, float>& multimap);
         int     insertToMultiMap(std::multimap<std::string, float>& multimap, std::string secondParam);
-        int     isDateValid();
-        int     madness();
+
+
+        //int     extractFromInput();
+        //int     madness();
 };

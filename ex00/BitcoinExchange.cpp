@@ -28,51 +28,65 @@ BitcoinExchange &BitcoinExchange::operator=(BitcoinExchange &other)
 }
 int BitcoinExchange::process()
 {
-    //extractDataFromFile();
-    extractFromInput();
+    extractDataFromFile();
+    isInputValid();
+    calculate();
+    //extractFromInput();
     //displaymultimap(this->_data);
-    displaymultimap(this->_input);
-    isDateValid();
     return 0;
 }
 int BitcoinExchange::extractDataFromFile()
 {
-    std::string line;
+    std::string _line;
 
     std::ifstream data("data.csv");
 
-    while(std::getline(data, line))
+    while(std::getline(data, _line))
     {
-        size_t pos = line.find(",");
-        this->_key = line.substr(0, pos); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
-        line.erase(0, pos + 1);
-        this->_value = line.substr(0, line.size()); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
+        size_t pos = _line.find(",");
+        this->_key = _line.substr(0, pos); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
+        _line.erase(0, pos + 1);
+        this->_value = _line.substr(0, _line.size()); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
         insertToMultiMap(this->_data, this->_value);
     }
     return 0;
 }
 
-int BitcoinExchange::extractFromInput()
+    // while(std::getline(data, line))
+    // {
+    //     size_t pos = line.find(",");
+    //     this->_key = line.substr(0, pos); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
+    //     line.erase(0, pos + 1);
+    //     this->_value = line.substr(0, line.size()); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
+    //     insertToMultiMap(this->_data, this->_value);
+    // }
+
+int BitcoinExchange::isInputValid()
 {
-    std::string line;
     std::ifstream input("input.txt");
 
-    while(std::getline(input, line))
+    while(std::getline(input, this->_line))
     {
-        size_t pos = line.find("|");
-        if(pos == std::string::npos)
+        try
         {
-            this->_value = "";
+            isSeparator(); // + recup _key input
+            isInputKeyValid();
+            isInputValueValid();
         }
-        else if(pos > 0)
+        catch(std::exception &e)
         {
-            this->_key = line.substr(0, pos);
-            line.erase(0, pos + 1);
-            this->_value = line.substr(0, line.size());
+            std::cerr << e.what() << std::endl;
         }
+
         std::cout << "date : " << this->_key << " amount : " << this->_value << std::endl;
         insertToMultiMap(this->_input, this->_value);
     }
+    return 0;
+}
+
+int BitcoinExchange::calculate()
+{
+
     return 0;
 }
 
@@ -84,6 +98,19 @@ void BitcoinExchange::displaymultimap(std::multimap<std::string, float>& multima
     }
 }
 
+bool BitcoinExchange::isSeparator()
+{
+        size_t pos = this->_line.find("|");
+        if(pos)
+        {
+            this->_key = _line.substr(0, pos);
+            _line.erase(0, pos + 1);
+            return true;
+        }
+        throw CustomException("Error : Missing separator");
+    return false;
+}
+
 int BitcoinExchange::insertToMultiMap(std::multimap<std::string, float>& multimap, std::string secondParam)
 {
     std::stringstream ss(secondParam);
@@ -93,7 +120,7 @@ int BitcoinExchange::insertToMultiMap(std::multimap<std::string, float>& multima
     return 0;
 }
 
-int BitcoinExchange::isDateValid()
+bool BitcoinExchange::isInputKeyValid()
 {
     // YYYY-MM-DD
     std::string year;
@@ -103,55 +130,82 @@ int BitcoinExchange::isDateValid()
     std::string tmp = this->_key;
     //std::cout << "tmp : " << tmp << " tmp size : " << tmp.size() << " tmp[4] : " << tmp[4] << " tmp[7] : " << tmp[7] << std::endl;
     if (tmp.size() != 11 || tmp[4] != '-' || tmp[7] != '-')
-        throw BitcoinExchange::invalidDate();
+        throw CustomException("Error : Wrong format");
     
     size_t pos = tmp.find("-");
     year = tmp.substr(0, pos);
     tmp.erase(0, pos + 1);
-    
     pos = tmp.find("-");
     month = tmp.substr(0, pos);
     tmp.erase(0, pos + 1);
-
     day = tmp.substr(0, tmp.size());
+    //std::cout << "year : " << year << " month : " << month << " day : " << day << std::endl;
+    isYearValid(year);
+    isMonthValid(month);
+    isDayValid(day);
 
-    std::cout << "year : " << year << " month : " << month << " day : " << day << std::endl;
-    
-    // from string to int
+    return 0;
+}
+
+bool BitcoinExchange::isYearValid(std::string year)
+{
     std::stringstream ssYear (year);
     int res;
     ssYear >> res;
-    if(res > 2022 || res < 2009)
+    if(res <= 2022 || res >= 2009)
     {
-        std::cout << "Res : " << res << " Invalid year : " << this->_key << std::endl;
-        throw BitcoinExchange::invalidDate();
+        return true;
     }
-
-    std::stringstream ssMonth (month);
-    ssMonth >> res;
-    if(res > 12 || res < 1)
-    {
-        std::cout << "Res : " << res << " Invalid month: " << this->_key << std::endl;
-        throw BitcoinExchange::invalidDate();
-    }
-    
-    std::stringstream ssDay (day);
-    ssDay >> res;
-    if(res > 31 || res < 1)
-    {
-        std::cout << "Res : " << res << " Invalid day: " << this->_key << std::endl;
-        throw BitcoinExchange::invalidDate();
-    }
-    return 0;
+    std::cout << "Res : " << res << " Invalid year : " << this->_key << std::endl;
+    throw CustomException("Error : Invalid date (year)");
+    return false;
 }
 
-int BitcoinExchange::madness()
+bool BitcoinExchange::isMonthValid(std::string month)
 {
-    /*
-        - comparer date input avec date data
-        - multiplier value input avec value data
-        - gerer cas d erreur
-    
-    */
+    std::stringstream ssMonth (month);
+    int res;
+    ssMonth >> res;
+    if(res <= 12 || res > 0)
+    {
+        return true;
+    }
+    std::cout << "Res : " << res << " Invalid month: " << this->_key << std::endl;
+    throw CustomException("Error : Invalid date (month)");
+    return false;
+}
+
+bool BitcoinExchange::isDayValid(std::string day)
+{
+    std::stringstream ssDay (day);
+    int res;
+    ssDay >> res;
+    if(res <= 31 || res > 0)
+    {
+        return true;
+    }
+    std::cout << "Res : " << res << " Invalid day: " << this->_key << std::endl;
+    throw CustomException("Error : Invalid date (day)");
+    return false;
+}
+
+bool BitcoinExchange::isInputValueValid()
+{
+    this->_value = this->_line.substr(0, this->_line.size()); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
+
+    std::stringstream ss (this->_value);
+    int value;
+    ss >> value;
+    //std::cout << "check amount  : " << it->second << std::endl;
+    if (value < 0)
+    {
+        throw CustomException("Error : Not a positive number");
+    }
+    if(value > 1000)
+    {
+        //std::cout << "check amount it->second : " << it->second << std::endl;
+        throw CustomException("Error : Too large amount");
+    }
     return 0;
 }
+
