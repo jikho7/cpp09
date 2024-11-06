@@ -9,10 +9,10 @@
 
 class BitcoinExchange
 {
-    std::multimap<std::string, float> _data;
-    std::string _value;
-    std::string _key;
-    std::string _line;
+    std::map<std::string, float>   _data;
+    std::string                         _value;
+    std::string                         _key;
+    std::string                         _line;
 
     public:
         BitcoinExchange();
@@ -31,27 +31,21 @@ class BitcoinExchange
                 }
         };
 
-        int     process();
-        int     extractDataFromFile();
-        bool    isInputValid();
-        int     calculate();
+        int                             process();
+        int                             extractDataFromFile();
+        bool                            isInputValid();
+        int                             calculate();
 
-        bool    isSeparator();
-        bool    isInputKeyValid();
-        bool    isInputValueValid();
+        bool                            isSeparator();
+        bool                            isInputKeyValid();
+        bool                            isInputValueValid();
+        bool                            isDateTokenValid(std::string& token, int from, int to);
 
-        bool    isDateTokenValid(std::string& token, int from, int to);
-        // bool    isMonthValid(std::string& month);
-        // bool    isDayValid(std::string& day);
+        std::string                     getString();
+        void                            displayMap(std::map<std::string, float>& map);
+        int                             insertToMap(std::map<std::string, float>& map, std::string& secondParam);
 
-        std::string getString();
-        void    displaymultimap(std::multimap<std::string, float>& multimap);
-        int     insertToMultiMap(std::multimap<std::string, float>& multimap, std::string& secondParam);
-
-        float   searchingPrice();
-
-        //int     extractFromInput();
-        //int     madness();
+        float                           searchingPrice();
 };
 
 struct Compare {

@@ -36,14 +36,9 @@ int BitcoinExchange::process()
     {
         if(isInputValid())
         {
-            //std::cout << "VALID INPUT : key input : " << this->_key << "\nValue valid : " << this->_value << std::endl;
             calculate();
         }
-
     }
-
-    //extractFromInput();
-    //displaymultimap(this->_data);
     return 0;
 }
 int BitcoinExchange::extractDataFromFile()
@@ -58,7 +53,7 @@ int BitcoinExchange::extractDataFromFile()
         this->_key = line.substr(0, pos); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
         line.erase(0, pos + 1);
         this->_value = line.substr(0, line.size()); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
-        insertToMultiMap(this->_data, this->_value);
+        insertToMap(this->_data, this->_value);
     }
     return 0;
 }
@@ -72,8 +67,7 @@ bool BitcoinExchange::isInputValid()
         isInputValueValid();
         return true;
     }
-    catch(std::exception &e)
-    {
+    catch(std::exception &e){
         std::cerr << e.what() << std::endl;
     }
     return false;
@@ -91,9 +85,9 @@ int BitcoinExchange::calculate()
     return 0;
 }
 
-void BitcoinExchange::displaymultimap(std::multimap<std::string, float>& multimap)
+void BitcoinExchange::displayMap(std::map<std::string, float>& map)
 {
-    for (std::multimap<std::string, float>::iterator it = multimap.begin(); it != multimap.end(); ++it)
+    for (std::map<std::string, float>::iterator it = map.begin(); it != map.end(); ++it)
     {
         std::cout << it->first << " => " << it->second << '\n';
     }
@@ -112,31 +106,26 @@ bool BitcoinExchange::isSeparator()
     return false;
 }
 
-int BitcoinExchange::insertToMultiMap(std::multimap<std::string, float>& multimap, std::string& secondParam)
+int BitcoinExchange::insertToMap(std::map<std::string, float>& map, std::string& secondParam)
 {
     std::stringstream ss(secondParam);
     float res;
     ss >> res;
-    multimap.insert(std::pair<std::string, float>(this->_key, res));
+    map.insert(std::pair<std::string, float>(this->_key, res));
     return 0;
 }
 
 float BitcoinExchange::searchingPrice() // searchingKey for value
 {
     std::map<std::string, float>::iterator it = this->_data.find(this->_key);
-    if (it != this->_data.end()) {
+    if (it != this->_data.end()){
         return it->second;
     }
     std::map<std::string, float>::iterator itt = std::lower_bound(this->_data.begin(), this->_data.end(), this->_key, Compare());
     // compare deux std::string, besoin de Compare pour gerer parametres custom de lower_bound
-    if(itt != this->_data.end())
-    {
+    if(itt != this->_data.end()){
         return itt->second;
     }
-    else {
-        throw std::runtime_error("Error: Key not found");
-    }
-
     return 0;
 }
 
@@ -177,6 +166,12 @@ bool BitcoinExchange::isInputValueValid()
     if(value > 1000)
     {
         throw CustomException("Error : Too large amount");
+    }
+    for (size_t i = 1; i < this->_value.size(); ++i) {
+        char c = this->_value[i];
+        if (!std::isdigit(c)) {
+            throw CustomException("Error : Not a number");
+        }
     }
     return true;
 }
