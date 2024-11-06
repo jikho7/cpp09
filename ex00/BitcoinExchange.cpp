@@ -28,9 +28,9 @@ BitcoinExchange &BitcoinExchange::operator=(BitcoinExchange &other)
     }
     return *this;
 }
-int BitcoinExchange::process()
+int BitcoinExchange::process(const char* filename)
 {
-    std::ifstream input("input.txt");
+    std::ifstream input(filename);
     extractDataFromFile();
     while(std::getline(input, this->_line))
     {

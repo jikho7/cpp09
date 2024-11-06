@@ -9,7 +9,7 @@
 
 class BitcoinExchange
 {
-    std::map<std::string, float>   _data;
+    std::map<std::string, float>        _data;
     std::string                         _value;
     std::string                         _key;
     std::string                         _line;
@@ -31,7 +31,7 @@ class BitcoinExchange
                 }
         };
 
-        int                             process();
+        int                             process(const char* filename);
         int                             extractDataFromFile();
         bool                            isInputValid();
         int                             calculate();
@@ -42,7 +42,6 @@ class BitcoinExchange
         bool                            isDateTokenValid(std::string& token, int from, int to);
         bool                            isDateBissextile(std::string& year);
 
-        std::string                     getString();
         void                            displayMap(std::map<std::string, float>& map);
         int                             insertToMap(std::map<std::string, float>& map, std::string& secondParam);
 
