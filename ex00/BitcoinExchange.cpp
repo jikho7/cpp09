@@ -62,7 +62,7 @@ bool BitcoinExchange::isInputValid()
 {
     try
     {
-        isSeparator(); // + recup _key input
+        isSeparator(); // + recup _key/_value input
         isInputKeyValid();
         isInputValueValid();
         return true;
@@ -100,6 +100,7 @@ bool BitcoinExchange::isSeparator()
         {
             this->_key = _line.substr(0, pos);
             _line.erase(0, pos + 1);
+            this->_value = this->_line.substr(0, this->_line.size()); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
             return true;
         }
         throw CustomException("Error : Missing separator");
@@ -148,14 +149,22 @@ bool BitcoinExchange::isInputKeyValid()
     day = tmp.substr(0, tmp.size());
     isDateTokenValid(year, 2009, 2022);
     isDateTokenValid(month, 1, 12);
-    isDateTokenValid(day, 1, 31);
-
+    std::stringstream ss (month);
+    int tMonth;
+    ss >> tMonth;
+    if(isDateBissextile(year) && tMonth == 2)
+        isDateTokenValid(day, 1, 29);
+    else if(tMonth == 2)
+        isDateTokenValid(day, 1, 28);
+    else if (tMonth % 2 == 0)
+        isDateTokenValid(day, 1, 30);
+    else if (tMonth % 2 != 0)
+        isDateTokenValid(day, 1, 31);
     return true;
 }
 
 bool BitcoinExchange::isInputValueValid()
 {
-    this->_value = this->_line.substr(0, this->_line.size()); // (Position of the first character to be copied as a substring, Number of characters to include in the substring)
     std::stringstream ss (this->_value);
     int value;
     ss >> value;
@@ -186,5 +195,19 @@ bool BitcoinExchange::isDateTokenValid(std::string &token, int from, int to)
         return true;
     }
     throw CustomException("Error : Invalid date");
+    return false;
+}
+
+bool BitcoinExchange::isDateBissextile(std::string& year)
+{
+    std::stringstream ss(year);
+    int res = 0;
+    ss >> res;
+    if (res % 400 == 0)
+        return true;
+    if(res % 100 == 0)
+        return true;
+    if(res % 4 == 0)
+        return true;
     return false;
 }

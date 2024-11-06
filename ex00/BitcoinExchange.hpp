@@ -40,6 +40,7 @@ class BitcoinExchange
         bool                            isInputKeyValid();
         bool                            isInputValueValid();
         bool                            isDateTokenValid(std::string& token, int from, int to);
+        bool                            isDateBissextile(std::string& year);
 
         std::string                     getString();
         void                            displayMap(std::map<std::string, float>& map);
