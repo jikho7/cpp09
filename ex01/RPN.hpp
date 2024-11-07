@@ -9,6 +9,7 @@
 class RPN 
 {
     std::stack<int> _stack;
+    int             _res;
 
     public:
     RPN();

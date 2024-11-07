@@ -1,13 +1,15 @@
 #include "RPN.hpp"
 
-RPN::RPN(){}
+RPN::RPN(): _res(0){}
 RPN::~RPN(){}
 RPN::RPN(RPN&other){
     this->_stack = other._stack;
+    this->_res = other._res;
 }
 RPN& RPN::operator=(RPN& other){
     if(this != &other){
         this->_stack = other._stack;
+        this->_res = other._res;
     }
     return *this;
 }
@@ -21,7 +23,6 @@ int RPN::process(const char* input)
         {
             std::stringstream ss(&input[i]);
             ss >> nb;
-            std::cout << nb << std::endl;
             this->_stack.push(nb);
         }
         else if(input[i] == '+' || input[i] == '-' ||input[i] == '*' ||input[i] == '/')
@@ -31,10 +32,10 @@ int RPN::process(const char* input)
         else if (input[i] != ' ')
         {
             std::cerr << "Error" << std::endl;
-            //std::cout << "error input: " << input[i] << std::endl;
             return 0;
         }
     }
+    std::cout << this->_res << std::endl;
     return 0;
 }
 
@@ -45,26 +46,25 @@ int RPN::calculate(const char operateur)
     int left = this->_stack.top();
     this->_stack.pop();
 
-    int res = 0;
     switch(operateur)
     {
         case('+'):
-            res = left + right;
+            this->_res = left + right;
             break;
         case('-'):
-            res = left - right;
+            this->_res = left - right;
             break;            
         case('*'):
-            res = left * right;
+            this->_res = left * right;
             break;            
         case('/'):
-            res = left / right;
+            this->_res = left / right;
             break;
         default:
             break;
     }
-    //std::cout << left << " " << operateur << " " << right << " = " << res << std::endl;
-    this->_stack.push(res);
+    //std::cout << _res << std::endl;
+    this->_stack.push(_res);
     return 0;
 }
 
