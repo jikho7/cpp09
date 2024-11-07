@@ -1,5 +1,5 @@
-NAME = easyfind
-SRC = main.cpp
+NAME = PmergeMe
+SRC = main.cpp PmergeMe.cpp
 OBJ := $(SRC:%.cpp=%.o)
 CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -fsanitize=address
 CXX = g++
