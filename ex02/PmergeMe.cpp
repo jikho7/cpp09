@@ -1,45 +1,71 @@
 #include "PmergeMe.hpp"
 
-Pmerge::Pmerge()
-{
-    std::cout << "Pmerge constructor called" << std::endl;
-}
+Pmerge::Pmerge(){}
 
-Pmerge::~Pmerge()
-{
-    std::cout << "Pmerge destructor called" << std::endl;
-}
+Pmerge::~Pmerge(){}
 
-Pmerge::Pmerge(const Pmerge &other) // Take const reference
+Pmerge::Pmerge(const Pmerge &other)
 {
     this->_a = other._a;
-    std::cout << "Pmerge copy constructor called, size: " << this->_a.size() << std::endl;
+    this->_doubleVec = other._doubleVec;
+    this->_bigNumberList = other._bigNumberList;
+    this->_smallNumberList = other._smallNumberList;
 }
 
-Pmerge &Pmerge::operator=(const Pmerge &other) // Take const reference
+Pmerge &Pmerge::operator=(const Pmerge &other)
 {
     if(this != &other)
     {
         this->_a = other._a;
-        std::cout << "Pmerge assignment operator called, size: " << this->_a.size() << std::endl;
+        this->_doubleVec = other._doubleVec;
+        this->_bigNumberList = other._bigNumberList;
+        this->_smallNumberList = other._smallNumberList;
     }
     return *this;
 }
 
-std::vector<int>& Pmerge::getVector() // Return non-const reference to vector
-{
-    std::cout << "getVector called, size: " << this->_a.size() << std::endl;
-    return this->_a;
-}
+// GETTERS (REF)
+std::list<int> &Pmerge::getRefBigNumberList(){
+    return this->_bigNumberList;}
 
-std::vector<std::pair<int, int> > &Pmerge::getDoubleVec(){
-    return this->_doubleVec;
-}
+std::list<int> &Pmerge::getRefSmallNumberList(){
+    return this->_smallNumberList;}
 
-void Pmerge::createPair()
+std::vector<int>& Pmerge::getRefVector(){
+    return this->_a;}
+
+std::vector<std::pair<int, int> > &Pmerge::getRefDoubleVec(){
+    return this->_doubleVec;}
+
+// METHODS
+void Pmerge::process(char * input)
 {
+    initVector(input);
+    displayVector();
     orderPair();
+
     createDoubleVector();
+    orderDoubleVector();
+    displayDoubleVector();
+
+    createBigNumberList();
+    createSmallNumberList();
+    displayList(this->_bigNumberList);
+    displayList(this->_smallNumberList);
+}
+
+void Pmerge::initVector(char * input)
+{
+    for(size_t i = 0; i < std::strlen(input); ++i)
+    {
+        while(input[i] == ' ')
+            i++;
+        std::stringstream ss;   // prend std::strinf en argument et pas de char*
+        ss << input[i];         // faire cette etape a la place
+        int res;
+        ss >> res;
+        this->_a.push_back(res);
+    }
 }
 
 void Pmerge::orderPair()
@@ -83,10 +109,33 @@ void Pmerge::orderDoubleVector()
     }
 }
 
+void Pmerge::createBigNumberList()
+{
+    std::cout << "creat Big number list" << std::endl;
+    this->_bigNumberList.clear(); // avoir une base propre, eviter doublon
+    for(std::vector<std::pair<int, int> >::iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
+    {
+        this->_bigNumberList.push_back(it->second);
+    }
+    std::cout << "end of creat Big number list" << std::endl;
+}
+
+void Pmerge::createSmallNumberList()
+{
+    std::cout << "creat Small number list" << std::endl;
+    this->_smallNumberList.clear(); // avoir une base propre, eviter doublon
+    for(std::vector<std::pair<int, int> >::iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
+    {
+        this->_smallNumberList.push_back(it->first);
+    }
+    std::cout << "end of creat Small number list" << std::endl;
+}
+
+// DISPLAY
 void Pmerge::displayVector() const
 {
     if(this->_a.empty())
-        std::cout << "vec is empty" << std::endl;
+        std::cout << "Vector is empty" << std::endl;
     for(std::vector<int>::const_iterator it = this->_a.begin(); it != this->_a.end(); ++it)
     {
         std::cout << *it << std::endl;
@@ -102,6 +151,18 @@ void Pmerge::displayDoubleVector() const
     }
 }
 
+void Pmerge::displayList(std::list<int>& list) const
+{
+    std::cout << "display list" << std::endl;
+    if (list.empty())
+        std::cout << "List is empty" << std::endl;
+    for(std::list<int>::const_iterator it = list.begin(); it != list.end(); ++it)
+    {
+        std::cout << *it << std::endl;
+    }
+}
+
+// OPERATOR
 std::ostream &operator<<(std::ostream &os, const std::pair<int, int> &pair)
 {
     os << pair.first << " " << pair.second << std::endl;

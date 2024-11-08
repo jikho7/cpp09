@@ -2,36 +2,18 @@
 #include "PmergeMe.hpp"
 #include <iostream>
 
-int main()
+int main(int ac, char** av)
 {
-    Pmerge merge;
-    std::vector<int>& vec = merge.getVector();
-
-    vec.push_back(1);
-    vec.push_back(8);
-    vec.push_back(12);
-    vec.push_back(7);
-    vec.push_back(81);
-    vec.push_back(0);
-    vec.push_back(11);
-    vec.push_back(5);
-    vec.push_back(50);
-
-    std::cout << "Vector size after modifications: " << vec.size() << std::endl;
-
-    //merge.displayVector();
-    merge.createPair();
-    merge.displayVector();
-    merge.displayDoubleVector();
-    merge.orderDoubleVector();
-    std::cout << std::endl;
-    merge.displayDoubleVector();
-
+    if (ac == 2)
+    {
+        Pmerge merge;
+        merge.process(av[1]);
+    }
+    return 0;
+}
 
     /*!SECTION
         recup input dans vector
         parcourir la liste, si next > current, pop out to char **!SECTION
         si next < current, swap et pop out 
     */
-    return 0;
-}
