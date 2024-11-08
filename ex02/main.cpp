@@ -19,10 +19,14 @@ int main()
 
     std::cout << "Vector size after modifications: " << vec.size() << std::endl;
 
-    merge.displayVector();
+    //merge.displayVector();
     merge.createPair();
     merge.displayVector();
     merge.displayDoubleVector();
+    merge.orderDoubleVector();
+    std::cout << std::endl;
+    merge.displayDoubleVector();
+
 
     /*!SECTION
         recup input dans vector

@@ -65,6 +65,24 @@ void Pmerge::createDoubleVector()
         }
     }
 }
+
+void Pmerge::orderDoubleVector()
+{
+    int j = 1;
+    while (j != 0)
+    {
+        j = 0;
+        for(std::vector<std::pair<int, int> >::iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
+        {
+            if((it + 1) != this->_doubleVec.end() && it->second > (it + 1)->second)
+            {
+                std::swap(*it, *(it +1));
+                j++;
+            }
+        }
+    }
+}
+
 void Pmerge::displayVector() const
 {
     if(this->_a.empty())

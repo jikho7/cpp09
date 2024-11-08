@@ -20,6 +20,7 @@ class Pmerge
         void                                displayDoubleVector() const;
         void                                orderPair();
         void                                createDoubleVector();
+        void                                orderDoubleVector();
 
     private:
         std::vector<int>                    _a;
