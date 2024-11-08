@@ -7,20 +7,23 @@
 
 class Pmerge
 {
-public:
-    Pmerge();
-    ~Pmerge();
-    Pmerge(const Pmerge &other);
-    Pmerge &operator=(const Pmerge &other);
+    public:
+        Pmerge();
+        ~Pmerge();
+        Pmerge(const Pmerge &other);
+        Pmerge &operator=(const Pmerge &other);
 
-    std::vector<int>& getVector(); 
-    void displayVector(const std::vector<int>& vec) const;
-    void    createPair(std::vector<int>& vec);
-    void    displayDoubleVector(std::vector<std::pair<int, int> > doubleVec);
+        std::vector<int>&                   getVector();
+        std::vector<std::pair<int, int> >&  getDoubleVec();
+        void                                createPair();
+        void                                displayVector() const;
+        void                                displayDoubleVector() const;
+        void                                orderPair();
+        void                                createDoubleVector();
 
-private:
-    std::vector<int> _a;
-    std::vector<std::pair<int, int> > _doubleVec;
+    private:
+        std::vector<int>                    _a;
+        std::vector<std::pair<int, int> >   _doubleVec;
 };
 
 std::ostream &operator<<(std::ostream& os, const std::pair<int, int>& pair);

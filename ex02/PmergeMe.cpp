@@ -32,56 +32,56 @@ std::vector<int>& Pmerge::getVector() // Return non-const reference to vector
     return this->_a;
 }
 
-void Pmerge::displayVector(const std::vector<int>& vec) const // Pass vector by const reference
-{
-    std::cout << "displayVector called, size: " << vec.size() << std::endl;
-    if(vec.empty())
-        std::cout << "vec is empty" << std::endl;
-    for(std::vector<int>::const_iterator it = vec.begin(); it != vec.end(); ++it)
-    {
-        std::cout << *it << std::endl;
-    }
+std::vector<std::pair<int, int> > &Pmerge::getDoubleVec(){
+    return this->_doubleVec;
 }
 
-void Pmerge::createPair(std::vector<int> &vec)
+void Pmerge::createPair()
 {
-    std::cout << "create pair" << std::endl;
-    for(std::vector<int>::iterator it = vec.begin(); it != vec.end(); ++it)
+    orderPair();
+    createDoubleVector();
+}
+
+void Pmerge::orderPair()
+{
+    for(std::vector<int>::iterator it = this->_a.begin(); it != this->_a.end(); ++it)
     {
-        if((it + 1) != vec.end() && *it > *(it + 1))
+        if((it + 1) != this->_a.end() && *it > *(it + 1))
         {
             std::swap(*it, *(it + 1));
             ++it;
         }
     }
-    std::cout << "check" << std::endl;
-    for(std::vector<int>::iterator it = vec.begin(); it != vec.end(); ++it)
-    {
-        std::cout << "check 1 " << std::endl;
+}
 
-        if(it != vec.end())
+void Pmerge::createDoubleVector()
+{
+    for(std::vector<int>::iterator it = this->_a.begin(); it != this->_a.end(); ++it)
+    {
+        if((it + 1) != this->_a.end())
         {
             this->_doubleVec.push_back(std::make_pair(*it, *(it + 1)));
             ++it;
         }
-        else
-            ++it;
     }
-    std::cout << "end create pair" << std::endl;
-
-    displayDoubleVector(this->_doubleVec);
-
 }
-
-void Pmerge::displayDoubleVector(std::vector<std::pair<int, int> > doubleVec)
+void Pmerge::displayVector() const
 {
-    std::cout << "Display doubleVec" << std::endl;
-    for(std::vector<std::pair<int, int> >::iterator it = doubleVec.begin(); it != doubleVec.end(); ++it)
+    if(this->_a.empty())
+        std::cout << "vec is empty" << std::endl;
+    for(std::vector<int>::const_iterator it = this->_a.begin(); it != this->_a.end(); ++it)
     {
         std::cout << *it << std::endl;
     }
-    std::cout << "End Display doubleVec" << std::endl;
+}
 
+void Pmerge::displayDoubleVector() const
+{
+    std::cout << "Display double Vector" << std::endl;
+    for(std::vector<std::pair<int, int> >::const_iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
+    {
+        std::cout << *it << std::endl;
+    }
 }
 
 std::ostream &operator<<(std::ostream &os, const std::pair<int, int> &pair)
