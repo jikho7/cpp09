@@ -22,10 +22,6 @@ class Pmerge
         Pmerge(const Pmerge &other);
         Pmerge &operator=(const Pmerge &other);
 
-        std::vector<int>&                   getRefVector();
-        std::vector<std::pair<int, int> >&  getRefDoubleVec();
-        std::list<int>&                     getRefBigNumberList();
-        std::list<int>&                     getRefSmallNumberList();
         // METHODS
         void                                process(char * input);
         void                                initVector(char * input);
@@ -34,16 +30,12 @@ class Pmerge
         void                                orderDoubleVector();
         void                                createBigNumberList();
         void                                createSmallNumberList();
-
-        void                                sortBigNumberChain();
+        void                                insertSmallNumbersToMainChain();
 
         // DISPLAY
         void                                displayVector() const;
         void                                displayDoubleVector() const;
         void                                displayList(std::list<int>& list) const;
-
-
-
 };
 
 std::ostream &operator<<(std::ostream& os, const std::pair<int, int>& pair);

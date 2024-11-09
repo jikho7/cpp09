@@ -24,45 +24,26 @@ Pmerge &Pmerge::operator=(const Pmerge &other)
     return *this;
 }
 
-// GETTERS (REF)
-std::list<int> &Pmerge::getRefBigNumberList(){
-    return this->_bigNumberList;}
-
-std::list<int> &Pmerge::getRefSmallNumberList(){
-    return this->_smallNumberList;}
-
-std::vector<int>& Pmerge::getRefVector(){
-    return this->_a;}
-
-std::vector<std::pair<int, int> > &Pmerge::getRefDoubleVec(){
-    return this->_doubleVec;}
+// GETTERS
 
 // METHODS
 void Pmerge::process(char * input)
 {
     initVector(input);
-    //displayVector();
     orderPair();
-   // std::cout << "after ordering pair" << std::endl;
-    //displayVector();
-
+    
     createDoubleVector();
-    //std::cout << "double vector display" << std::endl;
-   // displayDoubleVector();
-
     orderDoubleVector();
-    // std::cout << "after ordering double vector" << std::endl;
-    // displayDoubleVector();
 
     createBigNumberList();
-    // std::cout << "display big numbers list" << std::endl;
-    displayList(this->_bigNumberList);
-
+    //displayList(this->_bigNumberList);
     createSmallNumberList();
-    // std::cout << "display small numbers list" << std::endl;
-    displayList(this->_smallNumberList);
-}
+    //displayList(this->_smallNumberList);
 
+    insertSmallNumbersToMainChain();
+    std::cout << "after insertion " << std::endl;
+    displayList(this->_bigNumberList);
+}
 
 void Pmerge::initVector(char *input)
 {
@@ -76,7 +57,6 @@ void Pmerge::initVector(char *input)
         this->_even = !this->_even; // even to odds to even...
     }
 }
-
 
 void Pmerge::orderPair()
 {
@@ -110,7 +90,6 @@ void Pmerge::createDoubleVector()
         this->_doubleVec.push_back(std::make_pair(-1, *(this->_a.end() - 1)));
     }
 }
-
 
 void Pmerge::orderDoubleVector()
 {
@@ -147,7 +126,6 @@ void Pmerge::createBigNumberList()
         this->_bigNumberList.push_back(it->second);
     }
 }
-
 void Pmerge::createSmallNumberList()
 {
     this->_smallNumberList.clear(); // avoir une base propre, eviter doublon
@@ -158,7 +136,14 @@ void Pmerge::createSmallNumberList()
     }
 }
 
-
+void Pmerge::insertSmallNumbersToMainChain()
+{
+    for(std::list<int>::iterator it = this->_smallNumberList.begin(); it != this->_smallNumberList.end(); ++it)
+    {
+        std::list<int>::iterator pos = lower_bound(this->_bigNumberList.begin(), this->_bigNumberList.end(), *it);
+        this->_bigNumberList.insert(pos, *it);
+    }
+}
 
 // DISPLAY
 void Pmerge::displayVector() const
