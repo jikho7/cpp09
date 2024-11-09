@@ -1,4 +1,3 @@
-// vector list
 #include "PmergeMe.hpp"
 #include <iostream>
 
@@ -12,8 +11,7 @@ int main(int ac, char** av)
     return 0;
 }
 
-    /*!SECTION
-        recup input dans vector
-        parcourir la liste, si next > current, pop out to char **!SECTION
-        si next < current, swap et pop out 
-    */
+/*NOTE
+    - add counter to compare
+    - handled negatif numbers
+*/

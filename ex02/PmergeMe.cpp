@@ -24,72 +24,57 @@ Pmerge &Pmerge::operator=(const Pmerge &other)
     return *this;
 }
 
-// GETTERS
-
 // METHODS
 void Pmerge::process(char * input)
 {
-    initVector(input);
-    orderPair();
+	//this->_timeBegin = std::chrono::high_resolution_clock::now();
+
+    init(input, this->_vecTemplate);
+    init(input, this->_listTemplate);
+
+    orderPair(this->_vecTemplate);
+    std::cout << "display vector" << std::endl;
+    display(this->_vecTemplate);
+    orderPair(this->_listTemplate);
+    std::cout << "display list" << std::endl;
+    display(this->_listTemplate);
     
-    createDoubleVector();
-    orderDoubleVector();
+    createDoubleContainer(this->_vecTemplate, this->_doubleVec);
+    createDoubleContainer(this->_listTemplate, this->_doubleList);
 
-    createBigNumberList();
-    //displayList(this->_bigNumberList);
-    createSmallNumberList();
-    //displayList(this->_smallNumberList);
+    // orderDoubleVector();
 
-    insertSmallNumbersToMainChain();
-    std::cout << "after insertion " << std::endl;
-    displayList(this->_bigNumberList);
+    // createBigNumberList();
+    // //displayList(this->_bigNumberList);
+    // createSmallNumberList();
+    // //displayList(this->_smallNumberList);
+
+    // insertSmallNumbersToMainChain();
+    // std::cout << "after insertion " << std::endl;
+    // displayList(this->_bigNumberList);
+
+
+	//this->_timeEnd = std::chrono::high_resolution_clock::now();
+	//std::chrono::duration<double> processDuration = end_time - start_time;
+    //std::cout << "Total Time : " << this->_timeEnd - this->_timeEnd << std::endl;
 }
 
-void Pmerge::initVector(char *input)
-{
-    std::string str(input);     // convertion char * to std::string
-    std::stringstream ss(str);
-
-    int intNumber;
-    while (ss >> intNumber)     // strgingstream >> operator skip automatiquement les espaces, tab, new ligne
-    {
-        this->_a.push_back(intNumber);
-        this->_even = !this->_even; // even to odds to even...
-    }
-}
-
-void Pmerge::orderPair()
-{
-    for(std::vector<int>::iterator it = this->_a.begin(); it != this->_a.end(); ++it)
-    {
-        //std::cout << "it : " << *it << std::endl;
-        if((it + 1) != this->_a.end() && *it > *(it + 1))
-        {
-            std::swap(*it, *(it + 1));
-            //std::cout << "swap done : " << " it : " << *it << " it + 1 :" << *(it + 1) << std::endl;
-            it++;
-        }
-        else if ((it + 1) != this->_a.end() && *it < *(it + 1))
-            it++;
-    }
-}
-
-void Pmerge::createDoubleVector()
-{
-    for(std::vector<int>::iterator it = this->_a.begin(); it != this->_a.end(); ++it)
-    {
-        if((it + 1) != this->_a.end())
-        {
-            this->_doubleVec.push_back(std::make_pair(*it, *(it + 1)));
-            ++it;
-        }
-    }
-    if(!this->_even)
-    {
-        //std::cout << "even : " << this->_even << std::endl;
-        this->_doubleVec.push_back(std::make_pair(-1, *(this->_a.end() - 1)));
-    }
-}
+// void Pmerge::createDoubleVector()
+// {
+//     for(std::vector<int>::iterator it = this->_a.begin(); it != this->_a.end(); ++it)
+//     {
+//         if((it + 1) != this->_a.end())
+//         {
+//             this->_doubleVec.push_back(std::make_pair(*it, *(it + 1)));
+//             ++it;
+//         }
+//     }
+//     if(!this->_even)
+//     {
+//         //std::cout << "even : " << this->_even << std::endl;
+//         this->_doubleVec.push_back(std::make_pair(-1, *(this->_a.end() - 1)));
+//     }
+// }
 
 void Pmerge::orderDoubleVector()
 {
