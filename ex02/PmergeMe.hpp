@@ -14,6 +14,7 @@ class Pmerge
         std::vector<std::pair<int, int> >   _doubleVec;
         std::list<int>                      _bigNumberList;
         std::list<int>                      _smallNumberList;
+        bool                                _even;  // pair
 
     public:
         Pmerge();
@@ -33,6 +34,9 @@ class Pmerge
         void                                orderDoubleVector();
         void                                createBigNumberList();
         void                                createSmallNumberList();
+
+        void                                sortBigNumberChain();
+
         // DISPLAY
         void                                displayVector() const;
         void                                displayDoubleVector() const;

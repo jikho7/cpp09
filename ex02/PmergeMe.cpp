@@ -1,6 +1,6 @@
 #include "PmergeMe.hpp"
 
-Pmerge::Pmerge(){}
+Pmerge::Pmerge(): _even(true){}
 
 Pmerge::~Pmerge(){}
 
@@ -41,42 +41,56 @@ std::vector<std::pair<int, int> > &Pmerge::getRefDoubleVec(){
 void Pmerge::process(char * input)
 {
     initVector(input);
-    displayVector();
+    //displayVector();
     orderPair();
+   // std::cout << "after ordering pair" << std::endl;
+    //displayVector();
 
     createDoubleVector();
+    //std::cout << "double vector display" << std::endl;
+   // displayDoubleVector();
+
     orderDoubleVector();
-    displayDoubleVector();
+    // std::cout << "after ordering double vector" << std::endl;
+    // displayDoubleVector();
 
     createBigNumberList();
-    createSmallNumberList();
+    // std::cout << "display big numbers list" << std::endl;
     displayList(this->_bigNumberList);
+
+    createSmallNumberList();
+    // std::cout << "display small numbers list" << std::endl;
     displayList(this->_smallNumberList);
 }
 
-void Pmerge::initVector(char * input)
+
+void Pmerge::initVector(char *input)
 {
-    for(size_t i = 0; i < std::strlen(input); ++i)
+    std::string str(input);     // convertion char * to std::string
+    std::stringstream ss(str);
+
+    int intNumber;
+    while (ss >> intNumber)     // strgingstream >> operator skip automatiquement les espaces, tab, new ligne
     {
-        while(input[i] == ' ')
-            i++;
-        std::stringstream ss;   // prend std::strinf en argument et pas de char*
-        ss << input[i];         // faire cette etape a la place
-        int res;
-        ss >> res;
-        this->_a.push_back(res);
+        this->_a.push_back(intNumber);
+        this->_even = !this->_even; // even to odds to even...
     }
 }
+
 
 void Pmerge::orderPair()
 {
     for(std::vector<int>::iterator it = this->_a.begin(); it != this->_a.end(); ++it)
     {
+        //std::cout << "it : " << *it << std::endl;
         if((it + 1) != this->_a.end() && *it > *(it + 1))
         {
             std::swap(*it, *(it + 1));
-            ++it;
+            //std::cout << "swap done : " << " it : " << *it << " it + 1 :" << *(it + 1) << std::endl;
+            it++;
         }
+        else if ((it + 1) != this->_a.end() && *it < *(it + 1))
+            it++;
     }
 }
 
@@ -90,46 +104,61 @@ void Pmerge::createDoubleVector()
             ++it;
         }
     }
+    if(!this->_even)
+    {
+        //std::cout << "even : " << this->_even << std::endl;
+        this->_doubleVec.push_back(std::make_pair(-1, *(this->_a.end() - 1)));
+    }
 }
+
 
 void Pmerge::orderDoubleVector()
 {
-    int j = 1;
-    while (j != 0)
+    std::vector<int> mainChain;
+    // sorting mainchain with big numbers
+    for (std::vector<std::pair<int, int> >::iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
     {
-        j = 0;
-        for(std::vector<std::pair<int, int> >::iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
+        int value = it->second;
+        std::vector<int>::iterator pos = std::lower_bound(mainChain.begin(), mainChain.end(), value); // lower_bund : élément clé de l'algo merge insertion.
+        mainChain.insert(pos, value);
+    }
+
+    std::vector<std::pair<int, int> > sortedDoubleVec;
+    // Reintegrate small numbers to pair
+    for (size_t i = 0; i < mainChain.size(); ++i)
+    {
+        for (std::vector<std::pair<int, int> >::iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
         {
-            if((it + 1) != this->_doubleVec.end() && it->second > (it + 1)->second)
+            if (it->second == mainChain[i]) // comparing big numbers pair/vector
             {
-                std::swap(*it, *(it +1));
-                j++;
+                sortedDoubleVec.push_back(*it);
+                break; // eviter doublon
             }
         }
     }
+    this->_doubleVec = sortedDoubleVec;
 }
 
 void Pmerge::createBigNumberList()
 {
-    std::cout << "creat Big number list" << std::endl;
     this->_bigNumberList.clear(); // avoir une base propre, eviter doublon
     for(std::vector<std::pair<int, int> >::iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
     {
         this->_bigNumberList.push_back(it->second);
     }
-    std::cout << "end of creat Big number list" << std::endl;
 }
 
 void Pmerge::createSmallNumberList()
 {
-    std::cout << "creat Small number list" << std::endl;
     this->_smallNumberList.clear(); // avoir une base propre, eviter doublon
     for(std::vector<std::pair<int, int> >::iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
     {
-        this->_smallNumberList.push_back(it->first);
+        if (it->first != -1) // odds number list (-1, number)
+            this->_smallNumberList.push_back(it->first);
     }
-    std::cout << "end of creat Small number list" << std::endl;
 }
+
+
 
 // DISPLAY
 void Pmerge::displayVector() const
