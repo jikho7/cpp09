@@ -41,11 +41,13 @@ class Pmerge
         void                                displayList(std::list<int>& list) const;
         
         // TEMPLATES
-        template<typename T, typename D>void            createDoubleContainer(T&container, D& doubleContainer);
-
-        template<typename T> void           orderPair(T& container);
-        template<typename T> void           display(T& container)const ;
-        template<typename T> void           init(char *input, T& container);
+        template<typename T, typename D> void   createDoubleContainer(T&container, D& doubleContainer);
+        template<typename T, typename D> void   orderDoubleContainer(D& doubleContainer);
+        template<typename T> void               orderPair(T& container);
+        template<typename T> void               displayContainer(T& container)const ;
+        template<typename T> void               init(char *input, T& container);
+        template<typename D> void               displayDoubleContainer(D& doubleContainer)const;
+       //template<typename T> void               separateBigNumbers(D& doubleContainer);
 };
 
 std::ostream &operator<<(std::ostream& os, const std::pair<int, int>& pair);

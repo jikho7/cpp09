@@ -8,8 +8,10 @@ Pmerge::Pmerge(const Pmerge &other)
 {
     this->_a = other._a;
     this->_doubleVec = other._doubleVec;
+    this->_doubleList = other._doubleList;
     this->_bigNumberList = other._bigNumberList;
     this->_smallNumberList = other._smallNumberList;
+    this->_even = other._even;
 }
 
 Pmerge &Pmerge::operator=(const Pmerge &other)
@@ -18,8 +20,10 @@ Pmerge &Pmerge::operator=(const Pmerge &other)
     {
         this->_a = other._a;
         this->_doubleVec = other._doubleVec;
+        this->_doubleList = other._doubleList;
         this->_bigNumberList = other._bigNumberList;
         this->_smallNumberList = other._smallNumberList;
+        this->_even = other._even;
     }
     return *this;
 }
@@ -34,15 +38,18 @@ void Pmerge::process(char * input)
 
     orderPair(this->_vecTemplate);
     std::cout << "display vector" << std::endl;
-    display(this->_vecTemplate);
+    displayContainer(this->_vecTemplate);
+
     orderPair(this->_listTemplate);
     std::cout << "display list" << std::endl;
-    display(this->_listTemplate);
+    displayContainer(this->_listTemplate);
     
     createDoubleContainer(this->_vecTemplate, this->_doubleVec);
     createDoubleContainer(this->_listTemplate, this->_doubleList);
-
-    // orderDoubleVector();
+    orderDoubleContainer<std::vector<int> >(this->_doubleVec);
+    orderDoubleContainer<std::list<int> >(this->_doubleList);
+    displayDoubleContainer(this->_doubleVec);
+    displayDoubleContainer(this->_doubleList);
 
     // createBigNumberList();
     // //displayList(this->_bigNumberList);
@@ -59,49 +66,32 @@ void Pmerge::process(char * input)
     //std::cout << "Total Time : " << this->_timeEnd - this->_timeEnd << std::endl;
 }
 
-// void Pmerge::createDoubleVector()
+// void Pmerge::orderDoubleVector()
 // {
-//     for(std::vector<int>::iterator it = this->_a.begin(); it != this->_a.end(); ++it)
+//     std::vector<int> mainChain;
+//     // sorting mainchain with big numbers
+//     for (std::vector<std::pair<int, int> >::iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
 //     {
-//         if((it + 1) != this->_a.end())
+//         int value = it->second;
+//         std::vector<int>::iterator pos = std::lower_bound(mainChain.begin(), mainChain.end(), value); // lower_bund : élément clé de l'algo merge insertion.
+//         mainChain.insert(pos, value);
+//     }
+
+//     std::vector<std::pair<int, int> > sortedDoubleVec;
+//     // Reintegrate small numbers to pair
+//     for (size_t i = 0; i < mainChain.size(); ++i)
+//     {
+//         for (std::vector<std::pair<int, int> >::iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
 //         {
-//             this->_doubleVec.push_back(std::make_pair(*it, *(it + 1)));
-//             ++it;
+//             if (it->second == mainChain[i]) // comparing big numbers pair/vector
+//             {
+//                 sortedDoubleVec.push_back(*it);
+//                 break; // eviter doublon
+//             }
 //         }
 //     }
-//     if(!this->_even)
-//     {
-//         //std::cout << "even : " << this->_even << std::endl;
-//         this->_doubleVec.push_back(std::make_pair(-1, *(this->_a.end() - 1)));
-//     }
+//     this->_doubleVec = sortedDoubleVec;
 // }
-
-void Pmerge::orderDoubleVector()
-{
-    std::vector<int> mainChain;
-    // sorting mainchain with big numbers
-    for (std::vector<std::pair<int, int> >::iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
-    {
-        int value = it->second;
-        std::vector<int>::iterator pos = std::lower_bound(mainChain.begin(), mainChain.end(), value); // lower_bund : élément clé de l'algo merge insertion.
-        mainChain.insert(pos, value);
-    }
-
-    std::vector<std::pair<int, int> > sortedDoubleVec;
-    // Reintegrate small numbers to pair
-    for (size_t i = 0; i < mainChain.size(); ++i)
-    {
-        for (std::vector<std::pair<int, int> >::iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
-        {
-            if (it->second == mainChain[i]) // comparing big numbers pair/vector
-            {
-                sortedDoubleVec.push_back(*it);
-                break; // eviter doublon
-            }
-        }
-    }
-    this->_doubleVec = sortedDoubleVec;
-}
 
 void Pmerge::createBigNumberList()
 {
@@ -135,7 +125,7 @@ void Pmerge::displayVector() const
 {
     if(this->_a.empty())
         std::cout << "Vector is empty" << std::endl;
-    for(std::vector<int>::const_iterator it = this->_a.begin(); it != this->_a.end(); ++it)
+    for(std::vector<int>::const_iterator it = this->_vecTemplate.begin(); it != this->_vecTemplate.end(); ++it)
     {
         std::cout << *it << std::endl;
     }

@@ -4,7 +4,7 @@ template<typename T> void Pmerge::init(char *input, T& container)
 {
     std::string str(input);     // convertion char * to std::string
     std::stringstream ss(str);
-
+    this->_even = true;
     int intNumber;
     while (ss >> intNumber)     // strgingstream >> operator skip automatiquement les espaces, tab, new ligne
     {
@@ -13,7 +13,7 @@ template<typename T> void Pmerge::init(char *input, T& container)
     }
 }
 
-template<typename T> void Pmerge::display(T& container) const // T == std::vector<int> ou std::list<int>
+template<typename T> void Pmerge::displayContainer(T& container) const // T == std::vector<int> ou std::list<int>
 {
     if(container.empty())
         std::cout << "Vector is empty" << std::endl;
@@ -54,18 +54,56 @@ void Pmerge::createDoubleContainer(T& container, D& doubleContainer)
             ++it;
         }
     }
-    // if(!this->_even)
-    // {
-    //     //std::cout << "even : " << this->_even << std::endl;
-    //     this->_doubleVec.push_back(std::make_pair(-1, *(this->_a.end() - 1)));
-    // }
+    if(!this->_even)
+    {
+        typename T::iterator itt = container.end();
+        --itt;
+        doubleContainer.push_back(std::make_pair(-1, *itt));
+    }
 }
 
-void Pmerge::displayDoubleVector() const
+template<typename D>
+void Pmerge::displayDoubleContainer(D &doubleContainer) const
 {
-    std::cout << "Display double Vector" << std::endl;
-    for(std::vector<std::pair<int, int> >::const_iterator it = this->_doubleVec.begin(); it != this->_doubleVec.end(); ++it)
+    std::cout << "Display double container" << std::endl;
+    for(typename D::const_iterator it = doubleContainer.begin(); it != doubleContainer.end(); ++it)
     {
         std::cout << *it << std::endl;
     }
 }
+
+template<typename T, typename D>
+void Pmerge::orderDoubleContainer(D& doubleContainer)
+{
+    T mainChain; // std::vector<int> || std::list<int>
+    // 1ere etape: parcours doubleContainer, prend it->second(big number) et rempli de maniere triee mainChain grace a lower_bound
+    for(typename D::iterator it = doubleContainer.begin(); it != doubleContainer.end(); ++it)
+    {
+        int bigNumber = it->second;
+        typename T::iterator pos = std::lower_bound(mainChain.begin(), mainChain.end(), bigNumber); // lower_bund : élément clé de l'algo merge insertion.
+        mainChain.insert(pos, bigNumber);
+    }
+    D sortedDoubleContainer;
+    // Reintegrate small numbers to pair
+    for (typename T::iterator mainIt = mainChain.begin(); mainIt != mainChain.end(); ++mainIt)
+    {
+        for (typename D::iterator it = doubleContainer.begin(); it != doubleContainer.end(); ++it)
+        {
+            if (it->second == *mainIt)
+            {
+                sortedDoubleContainer.push_back(*it); // ajoute la pair complete (41 72) 
+                break; //TODO eviter doublon TESTER AVEC 2 MEMES NOMBRE DANS INPUT
+            }
+        }
+    }
+    doubleContainer = sortedDoubleContainer;
+}
+
+// template<typename D> void Pmerge::separateBigNumbers(D& doubleContainer)
+// {
+//     this->_bigNumbers.clear(); // avoir une base propre, eviter doublon
+//     for(typename D::iterator it = doubleContainer.begin(); it != doubleContainer.end(); ++it)
+//     {
+//         this->_bigNumbers.push_back(it->second);
+//     }
+// }
