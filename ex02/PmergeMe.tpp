@@ -2,18 +2,18 @@
 
 template<typename T> void Pmerge::init(char *input, T& container)
 {
-    std::string str(input);     // convertion char * to std::string
+    std::string str(input);         // convertion char * to std::string
     std::stringstream ss(str);
     this->_even = true;
     int intNumber;
-    while (ss >> intNumber)     // strgingstream >> operator skip automatiquement les espaces, tab, new ligne
+    while (ss >> intNumber)         // strgingstream >> operator skip automatiquement les espaces, tab, new ligne
     {
         container.push_back(intNumber);
         this->_even = !this->_even; // even to odds to even...
     }
 }
 
-template<typename T> void Pmerge::displayContainer(T& container) const // T == std::vector<int> ou std::list<int>
+template<typename T> void Pmerge::displayContainer(T& container) const                  // T == std::vector<int> ou std::list<int>
 {
     if(container.empty())
         std::cout << "Vector is empty" << std::endl;
@@ -23,17 +23,15 @@ template<typename T> void Pmerge::displayContainer(T& container) const // T == s
     }
 }
 
-template<typename T> void Pmerge::orderPair(T& container) // tyename T == std::vector<int> || std::list<int>
+template<typename T> void Pmerge::orderPair(T& container)        // typename T == std::vector<int> || std::list<int>
 {
     for(typename T::iterator it = container.begin(); it != container.end(); ++it)
     {
-        //std::cout << "it : " << *it << std::endl;
-        typename T::iterator nextIt = it; // car (it + 1) non valide pour list, == (it + 1) de vector
+        typename T::iterator nextIt = it;                       // car (it + 1) non valide pour list, == (it + 1) de vector
         ++nextIt;
         if(nextIt != container.end() && *it > *nextIt)
         {
             std::swap(*it, *nextIt);
-            //std::cout << "swap done : " << " it : " << *it << " it + 1 :" << *(it + 1) << std::endl;
             it++;
         }
         else if (nextIt != container.end() && *it < *nextIt)
@@ -65,7 +63,6 @@ void Pmerge::createDoubleContainer(T& container, D& doubleContainer)
 template<typename D>
 void Pmerge::displayDoubleContainer(D &doubleContainer) const
 {
-    std::cout << "Display double container" << std::endl;
     for(typename D::const_iterator it = doubleContainer.begin(); it != doubleContainer.end(); ++it)
     {
         std::cout << *it << std::endl;
@@ -99,11 +96,25 @@ void Pmerge::orderDoubleContainer(D& doubleContainer)
     doubleContainer = sortedDoubleContainer;
 }
 
-// template<typename D> void Pmerge::separateBigNumbers(D& doubleContainer)
-// {
-//     this->_bigNumbers.clear(); // avoir une base propre, eviter doublon
-//     for(typename D::iterator it = doubleContainer.begin(); it != doubleContainer.end(); ++it)
-//     {
-//         this->_bigNumbers.push_back(it->second);
-//     }
-// }
+template<typename T, typename D> void Pmerge::separateNumbers(T& bigNumberContainer, T& smallNumberContainer, D& doubleContainer)
+{
+    smallNumberContainer.clear();   // avoir une base propre, eviter doublon
+    bigNumberContainer.clear();
+    for(typename D::iterator it = doubleContainer.begin(); it != doubleContainer.end(); ++it)
+    {
+        bigNumberContainer.push_back(it->second);
+        smallNumberContainer.push_back(it->first);
+    }
+}
+
+template<typename T> void Pmerge::insertSmallNumbersToMainChain(T& bigNumber, T& smallNumber)
+{
+    for(typename T::iterator it = smallNumber.begin(); it != smallNumber.end(); ++it)
+    {
+        if (*it >= 0)
+        {
+            typename T::iterator pos = lower_bound(bigNumber.begin(), bigNumber.end(), *it);
+            bigNumber.insert(pos, *it);
+        }
+    }
+}

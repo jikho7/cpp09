@@ -13,5 +13,4 @@ int main(int ac, char** av)
 
 /*NOTE
     - add counter to compare
-    - handled negatif numbers
 */
