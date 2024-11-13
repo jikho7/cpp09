@@ -4,23 +4,28 @@ template<typename T> void Pmerge::init(char *input, T& container)
 {
     std::string str(input);         // convertion char * to std::string
     std::stringstream ss(str);
-    this->_even = true;
     int intNumber;
+    std::set<int> uniqueNumbers;    // set ne permet pas les doublons :)
     while (ss >> intNumber)         // strgingstream >> operator skip automatiquement les espaces, tab, new ligne
     {
-        container.push_back(intNumber);
-        this->_even = !this->_even; // even to odds to even...
+        if (uniqueNumbers.insert(intNumber).second) // insert returns a pair, second is true iif insertion ok
+        {
+            container.push_back(intNumber);
+            this->_even = !this->_even; // even to odds to even...
+            this->_nbOfElements++;
+        }
     }
 }
 
 template<typename T> void Pmerge::displayContainer(T& container) const                  // T == std::vector<int> ou std::list<int>
 {
     if(container.empty())
-        std::cout << "Vector is empty" << std::endl;
+        std::cout << "Container is empty" << std::endl;
     for(typename T::const_iterator it = container.begin(); it != container.end(); ++it) // typename dit que T::const_iterator est un type
     {
-        std::cout << *it << std::endl;
+        std::cout << *it << " ";
     }
+    std::cout << std::endl;
 }
 
 template<typename T> void Pmerge::orderPair(T& container)        // typename T == std::vector<int> || std::list<int>

@@ -11,7 +11,7 @@ int main(int ac, char**av)
     return 0;
 }
 
-/*!SECTION
+/*NOTE
 
 > ./RPN "8 9 * 9 - 9 - 9 - 4 - 1 +"
 42
@@ -21,5 +21,7 @@ $> ./RPN "1 2 * 2 / 2 * 2 4 - +"
 0
 $> ./RPN "(1 + 1)"
 Error
+
+-> gerer la division par 0
 
 */

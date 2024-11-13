@@ -2,25 +2,39 @@
 #define PMERGEME_HPP
 
 #include <vector>
+#include <list>
+#include <deque>
+#include <set>
 #include <iostream>
 #include <ostream>
-#include <list>
 #include <sstream>
 #include <cstring>
 #include <ctime>
+#include <cmath>
+
+#define RESET   "\033[0m" 
+#define ORANGE  "\033[38;5;214m" 
 
 class Pmerge
 {
         std::vector<std::pair<int, int> >       _doubleVec;
         std::list<std::pair<int, int> >         _doubleList;
+        std::deque<std::pair<int, int> >        _doubleDeque;
+
         std::vector<int>                        _bigNumberVector;
         std::vector<int>                        _smallNumberVector;
         std::list<int>                          _bigNumberList;
         std::list<int>                          _smallNumberList;
+
+        std::deque<int>                        _bigNumberDeque;
+        std::deque<int>                        _smallNumberDeque;
+
         bool                                    _even;  // pair
+        int                                     _nbOfElements;
 
         std::vector<int>                        _vecTemplate;
         std::list<int>                          _listTemplate;
+        std::deque<int>                         _dequeTemplate;
 
     public:
         Pmerge();
@@ -38,6 +52,7 @@ class Pmerge
         template<typename T, typename D> void   orderDoubleContainer(D& doubleContainer);
         template<typename T, typename D> void   separateNumbers(T& bigNumberContainer, T& smallNumberContainer, D& doubleContainer);
         template<typename T> void               insertSmallNumbersToMainChain(T& bigNumber, T& smallNumber);
+        //std::vector<int>                        calculateTkSequence(int n);
 
         // DISPLAY
         template<typename T> void               displayContainer(T& container)const ;
